@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:07 MDT 2021
+# IP Build 3246043 on Fri Jun 11 00:30:35 MDT 2021
+# Start of session at: Thu Jul 27 18:38:22 2023
+# Process ID: 687731
+# Current directory: /home/lucas.damo/Documents/PROTOTIPACAO FPGA/uart-ram/uart-ram-synth/uart-ram-synth.runs/synth_1
+# Command line: vivado -log top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source top.tcl
+# Log file: /home/lucas.damo/Documents/PROTOTIPACAO FPGA/uart-ram/uart-ram-synth/uart-ram-synth.runs/synth_1/top.vds
+# Journal file: /home/lucas.damo/Documents/PROTOTIPACAO FPGA/uart-ram/uart-ram-synth/uart-ram-synth.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source top.tcl -notrace
