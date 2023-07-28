@@ -7,6 +7,9 @@ module top(
     input bit sig_rx,
     output bit sig_tx
 
+    input bit button_left,
+    input bit button_right
+
     //input bit sig_rts_rx,
     //output bit sig_cts_tx
     
@@ -16,12 +19,45 @@ module top(
 );
 logic [7:0] data_tx, data_rx, mem_addr;
 logic validtx, validrx,readytx, readyrx;
+logic rec_but, send_but
+initial begin
+    mem_addr = 'd0;
+end
 
     typedef enum integer { 
         idle = 0,
-        receiving = 1,
-        sending = 2
+        init = 1,
+        receiving = 2,
+        sending = 3
     } states;
+
+states EA = idle;
+
+always @(posedge clock) begin
+    if(~reset) begin
+        case(EA) 
+
+
+            idle: begin
+                EA <= init;
+            end
+
+
+            init: begin
+            end
+
+            receiving: begin
+            end
+
+            sending: begin
+            end
+
+        endcase
+    end
+
+
+
+end
     
 
 
@@ -72,6 +108,10 @@ uart #(8, 115200, 100_000_000 ) uart (
     .rstn       (~reset)
 );
 
+
+edge_detector receiving_button(.clock(clock), .reset(reset), .din(), .rising());
+edge_detector sending_button(.clock(clock), .reset(reset), .din(), .rising());
+edge_detector addr_up_detect(.clock(clock), .reset(reset), .din(addr_up), .rising(address_up));
 
 
 endmodule
