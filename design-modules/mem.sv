@@ -1,13 +1,14 @@
 
 // Read-First Mode
 //
-module ram (clock, wr_en, addr, din, dout);
+module ram #(parameter 
+             SIZE = 8)(clock, wr_en, addr, din, dout);
 input clock;
 input wr_en;
 input [7:0] addr;
 input [7:0] din;
-output [31:0] dout;
-reg [7:0] RAM [254:0];
+output [7:0] dout;
+reg [7:0] RAM [SIZE];
 reg [7:0] dout;
 
 

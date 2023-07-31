@@ -4,12 +4,12 @@
 ## - rename the used ports (in each line, after get_ports) according to the top level signal names in the project
 
 ## Clock signal
-set_property -dict { PACKAGE_PIN E3    IOSTANDARD LVCMOS33 } [get_ports { clock }]; #IO_L12P_T1_MRCC_35 Sch=clk100mhz
-create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports {clock}];
+set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports clock]
+create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_ports clock]
 
 
 ##Switches
-set_property -dict { PACKAGE_PIN J15   IOSTANDARD LVCMOS33 } [get_ports { reset }]; #IO_L24N_T3_RS0_15 Sch=sw[0]
+set_property -dict {PACKAGE_PIN J15 IOSTANDARD LVCMOS33} [get_ports reset]
 #set_property -dict { PACKAGE_PIN L16   IOSTANDARD LVCMOS33 } [get_ports { selector[1] }]; #IO_L3N_T0_DQS_EMCCLK_14 Sch=sw[1]
 #set_property -dict { PACKAGE_PIN M13   IOSTANDARD LVCMOS33 } [get_ports { selector[2] }]; #IO_L6N_T0_D08_VREF_14 Sch=sw[2]
 #set_property -dict { PACKAGE_PIN R15   IOSTANDARD LVCMOS33 } [get_ports { SW[3] }]; #IO_L13N_T2_MRCC_14 Sch=sw[3]
@@ -45,12 +45,12 @@ set_property -dict { PACKAGE_PIN J15   IOSTANDARD LVCMOS33 } [get_ports { reset 
 #set_property -dict { PACKAGE_PIN V11   IOSTANDARD LVCMOS33 } [get_ports { LED[15] }]; #IO_L21N_T3_DQS_A06_D22_14 Sch=led[15]
 
 ## RGB LEDs
-#set_property -dict { PACKAGE_PIN R12   IOSTANDARD LVCMOS33 } [get_ports { leds[0]}]; #IO_L5P_T0_D06_14 Sch=led16_b
-#set_property -dict { PACKAGE_PIN M16   IOSTANDARD LVCMOS33 } [get_ports { leds[1] }]; #IO_L10P_T1_D14_14 Sch=led16_g
-#set_property -dict { PACKAGE_PIN N15   IOSTANDARD LVCMOS33 } [get_ports { leds[2] }]; #IO_L11P_T1_SRCC_14 Sch=led16_r
-#set_property -dict { PACKAGE_PIN G14   IOSTANDARD LVCMOS33 } [get_ports { leds[3] }]; #IO_L15N_T2_DQS_ADV_B_15 Sch=led17_b
-#set_property -dict { PACKAGE_PIN R11   IOSTANDARD LVCMOS33 } [get_ports { leds[4] }]; #IO_0_14 Sch=led17_g
-#set_property -dict { PACKAGE_PIN N16   IOSTANDARD LVCMOS33 } [get_ports { leds[5] }]; #IO_L11N_T1_SRCC_14 Sch=led17_r
+set_property -dict {PACKAGE_PIN R12 IOSTANDARD LVCMOS33} [get_ports {states_led[0]}]
+set_property -dict {PACKAGE_PIN M16 IOSTANDARD LVCMOS33} [get_ports {states_led[1]}]
+set_property -dict {PACKAGE_PIN N15 IOSTANDARD LVCMOS33} [get_ports {states_led[2]}]
+set_property -dict {PACKAGE_PIN G14 IOSTANDARD LVCMOS33} [get_ports {states_led[3]}]
+set_property -dict {PACKAGE_PIN R11 IOSTANDARD LVCMOS33} [get_ports {states_led[4]}]
+set_property -dict {PACKAGE_PIN N16 IOSTANDARD LVCMOS33} [get_ports {states_led[5]}]
 
 ##7 segment display
 #set_property -dict { PACKAGE_PIN T10   IOSTANDARD LVCMOS33 } [get_ports { dec_ddp[7] }]; #IO_L24N_T3_A00_D16_14 Sch=ca
@@ -180,8 +180,8 @@ set_property -dict { PACKAGE_PIN J15   IOSTANDARD LVCMOS33 } [get_ports { reset 
 #set_property -dict { PACKAGE_PIN D12   IOSTANDARD LVCMOS33 } [get_ports { AUD_SD }]; #IO_L6P_T0_15 Sch=aud_sd
 
 ##USB-RS232 Interface
-set_property -dict { PACKAGE_PIN C4    IOSTANDARD LVCMOS33 } [get_ports { sig_rx }]; #IO_L7P_T1_AD6P_35 Sch=uart_txd_in
-set_property -dict { PACKAGE_PIN D4    IOSTANDARD LVCMOS33 } [get_ports { sig_tx}]; #IO_L11N_T1_SRCC_35 Sch=uart_rxd_out
+set_property -dict {PACKAGE_PIN C4 IOSTANDARD LVCMOS33} [get_ports sig_rx]
+set_property -dict {PACKAGE_PIN D4 IOSTANDARD LVCMOS33} [get_ports sig_tx]
 #set_property -dict { PACKAGE_PIN D3    IOSTANDARD LVCMOS33 } [get_ports { sig_rts_rx }]; #IO_L12N_T1_MRCC_35 Sch=uart_cts
 #set_property -dict { PACKAGE_PIN E5    IOSTANDARD LVCMOS33 } [get_ports { sig_cts_tx }]; #IO_L5N_T0_AD13N_35 Sch=uart_rts
 
@@ -209,3 +209,8 @@ set_property -dict { PACKAGE_PIN D4    IOSTANDARD LVCMOS33 } [get_ports { sig_tx
 #set_property -dict { PACKAGE_PIN L14   IOSTANDARD LVCMOS33 } [get_ports { QSPI_DQ[2] }]; #IO_L2P_T0_D02_14 Sch=qspi_dq[2]
 #set_property -dict { PACKAGE_PIN M14   IOSTANDARD LVCMOS33 } [get_ports { QSPI_DQ[3] }]; #IO_L2N_T0_D03_14 Sch=qspi_dq[3]
 #set_property -dict { PACKAGE_PIN L13   IOSTANDARD LVCMOS33 } [get_ports { QSPI_CSN }]; #IO_L6P_T0_FCS_B_14 Sch=qspi_csn
+
+create_pblock pblock_mem
+add_cells_to_pblock [get_pblocks pblock_mem] [get_cells -quiet [list mem]]
+resize_pblock [get_pblocks pblock_mem] -add {RAMB18_X0Y42:RAMB18_X0Y45}
+resize_pblock [get_pblocks pblock_mem] -add {RAMB36_X0Y21:RAMB36_X0Y22}
