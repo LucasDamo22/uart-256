@@ -210,7 +210,3 @@ set_property -dict {PACKAGE_PIN D4 IOSTANDARD LVCMOS33} [get_ports sig_tx]
 #set_property -dict { PACKAGE_PIN M14   IOSTANDARD LVCMOS33 } [get_ports { QSPI_DQ[3] }]; #IO_L2N_T0_D03_14 Sch=qspi_dq[3]
 #set_property -dict { PACKAGE_PIN L13   IOSTANDARD LVCMOS33 } [get_ports { QSPI_CSN }]; #IO_L6P_T0_FCS_B_14 Sch=qspi_csn
 
-create_pblock pblock_mem
-add_cells_to_pblock [get_pblocks pblock_mem] [get_cells -quiet [list mem]]
-resize_pblock [get_pblocks pblock_mem] -add {RAMB18_X0Y42:RAMB18_X0Y45}
-resize_pblock [get_pblocks pblock_mem] -add {RAMB36_X0Y21:RAMB36_X0Y22}
