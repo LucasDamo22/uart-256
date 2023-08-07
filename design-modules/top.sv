@@ -10,7 +10,7 @@ module top(
     
     
 );
-localparam  MEM_SIZE = 256;
+localparam  MEM_SIZE = 255;
 logic [7:0]  mem_addr;
 logic [5:0] colors;
 
