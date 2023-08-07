@@ -5,6 +5,8 @@
 ### Repo link
 - https://github.com/LucasDamo22/template-sv-nexysA7.git
 
+##
+
 # uart-255
 ## configurations for the minicom terminal
 - enable linefeed
