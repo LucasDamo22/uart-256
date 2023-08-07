@@ -18,4 +18,4 @@ vsim -voptargs=+acc=lprn -t ns work.tb
 
 do wave.do
 
-run 65 ms
+run 15 ms
