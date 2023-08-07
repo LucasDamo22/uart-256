@@ -17,7 +17,7 @@ module top(
     
     
 );
-localparam  MEM_SIZE = 35;
+localparam  MEM_SIZE = 256;
 logic [7:0]  mem_addr, cr, lf, data_tx;
 logic [5:0] colors;
 
@@ -39,7 +39,9 @@ end
         pre_sending = 3,
         sending = 4,
         pre_receiving = 5,
-        new_line = 6
+        pre2_sending = 6,
+        pre3_sending = 7,
+        mem_dout_time = 8
         
     } states;
 
@@ -64,13 +66,13 @@ always @(posedge clock) begin
             receiving: begin
                 colors <= 'b100100;
                 
-                if(rx.valid == 'b1) begin
+                if(rx.valid == 'b1 && rx.ready == 'b1) begin
                     mem_addr <= mem_addr + 3'b001;
-                    if(mem_addr == MEM_SIZE) begin
-                        mem_addr <= '0;
+                    if(mem_addr == (MEM_SIZE-1)) begin
+                        mem_addr <= 'b0;
                         rx.ready <= 'b0;
-                        tx.valid <= 'b1;
-                        EA <= pre_sending;
+                                            
+                        EA <= mem_dout_time;
                     end else begin
                        
                         EA <= receiving;
@@ -81,25 +83,37 @@ always @(posedge clock) begin
                 colors <= 'b010010;
                 if(tx.ready == 'b1) begin
                     mem_addr <= mem_addr + 3'b001;
-                    if(mem_addr == MEM_SIZE) begin
-                        mem_addr <= '0;
+                    EA <= mem_dout_time;
+                    if(mem_addr == (MEM_SIZE -2) ) begin
+                        tx.valid <='b0;
+                    end
+                    if(mem_addr == (MEM_SIZE-1)) begin
+                        mem_addr <= 'b0;
                         rx.ready <= 'b1;
                         tx.valid <= 'b0;
                         EA <= pre_receiving;
                     end else begin
                     
-                    EA <= sending;
+                    //EA <= sending;
                 end
                 end
             end
             pre_receiving: begin
                 EA <= receiving;
             end
-            pre_sending: begin
+            //pre_sending: begin
+            //    
+            //    EA <= pre2_sending;
+            //end
+            mem_dout_time: begin
+                EA <= pre_sending;
+            end
+            pre3_sending:begin
                 EA <= sending;
             end
-            new_line: begin
-            
+            pre_sending:begin
+                tx.valid <= 'b1;    
+                EA <= sending;
             end
         endcase
     end else begin
@@ -121,7 +135,7 @@ uart_if #(8) rx();
 
 
 ram #(MEM_SIZE)mem( .clock      (clock),
-                    .wr_en      (rx.valid),
+                    .wr_en      (rx.valid && rx.ready),
                     .addr       (mem_addr),
                     .din        (rx.data),
                     .dout       (tx.data));
