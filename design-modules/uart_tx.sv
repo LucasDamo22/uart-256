@@ -34,7 +34,7 @@ module uart_tx
     */
     DATA_WIDTH = 8,
     BAUD_RATE  = 115200,
-    CLK_FREQ   = 100_000_000,
+    CLK_FREQ   = 200_000_000,
 
     localparam
     LB_DATA_WIDTH    = $clog2(DATA_WIDTH),

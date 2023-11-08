@@ -5,9 +5,9 @@ module tb;
     bit clock, reset;
     integer i;
     logic sig_rx, sig_tx, sig_rts_rx, sig_cts_tx;
-    localparam PERIOD_100MHZ = 10;
+    localparam CLOCK_PERIOD = 5;
     localparam sig_detecttime = 8680;
-    reg [7:0]serial_data[7:0];
+    reg [7:0]serial_data[10:0];
     initial
     begin
         reset = 1'b1;
@@ -18,31 +18,30 @@ logic [3:0] cont;
     initial
     begin
         clock = 1'b1;
-        serial_data[0] = 'd240;
-        serial_data[1] = 'd35;
-        serial_data[2] = 'd127;
-        serial_data[3] = 'd07;
-        serial_data[4] = 'd10;
-        serial_data[5] = 'd45;
-        serial_data[6] = 'd90;
-        serial_data[7] = 'd46;  
+        serial_data[0] = 'd104;
+        serial_data[1] = 'd101;
+        serial_data[2] = 'd108;
+        serial_data[3] = 'd108;
+        serial_data[4] = 'd111;
+        serial_data[5] = 'd009;
+        serial_data[6] = 'd119;
+        serial_data[7] = 'd111; 
+        serial_data[8] = 'd114; 
+        serial_data[9] = 'd108; 
+        serial_data[10] = 'd100;  
         sig_rts_rx = 'b1;
         cont = 0;
-        forever #(PERIOD_100MHZ/2) clock = ~clock;
-        
-        
-        // 
         
     end
 
-
+    always #(CLOCK_PERIOD/2.0) clock = ~clock;
 
 
 assign sig_rx = sig_rts_rx;
 //assign sig_rx = ;
 
 always begin
-    #10
+    #30
     sig_rts_rx = 'b1;
     #(sig_detecttime* 5)
     //start bit
@@ -59,7 +58,7 @@ always begin
     #(sig_detecttime) sig_rts_rx = serial_data[cont][7];
     #(sig_detecttime)
     cont = cont + 'b1;
-    if(cont == 'd8) begin
+    if(cont == 'd11) begin
         cont = 0;
     end
 

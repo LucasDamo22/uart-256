@@ -6,12 +6,12 @@ module top(
 
     input bit sig_rx,                   // serial input wire
     output bit sig_tx,                  // serial output wire
-    output logic [5:0]states_led        // state indicator led
+    output logic [1:0]states_led        // state indicator led
     
     
 );
-localparam  MEM_SIZE = 255;
-logic [7:0]  mem_addr;
+localparam  MEM_SIZE = 11;
+logic [7:0]  mem_addr, mem_addr_temp;
 logic [5:0] colors;
 
 
@@ -53,10 +53,16 @@ always @(posedge clock) begin
                 
                 if(rx.valid == 'b1 && rx.ready == 'b1) begin    // if it is receiving data and the data has finished unserializing, next mem_address
                     mem_addr <= mem_addr + 3'b001;
-                    if(mem_addr == (MEM_SIZE-1)) begin          // if we filled the memory the entire memory, all the data will be serialized out
+                    if(rx.data ==  'd97) begin
+                        mem_addr <= 'b0;        //go the beginning of the mem
+                        rx.ready <= 'b0;        //turn the receiver off
+                        EA <= mem_dout_time;  
+                        mem_addr_temp <= mem_addr;  //wait for the memory to set the data_out
+                    end else if(mem_addr == (MEM_SIZE-1)) begin          // if we filled the memory the entire memory, all the data will be serialized out
 
                         mem_addr <= 'b0;        //go the beginning of the mem
                         rx.ready <= 'b0;        //turn the receiver off
+                        mem_addr_temp <= mem_addr;
                         EA <= mem_dout_time;    //wait for the memory to set the data_out
                     end else begin
                        
@@ -70,13 +76,14 @@ always @(posedge clock) begin
                 if(tx.ready == 'b1) begin                       // if it is sending data and the data has finished serializing the data, next mem_address
                     mem_addr <= mem_addr + 3'b001;
                     EA <= mem_dout_time;                        // it is needed to wait 1 clock cycle for the memory to send the next data_out, so we need an extra state
-                    if(mem_addr == (MEM_SIZE -2) ) begin        // if we reach the the
-                        tx.valid <='b0;
-                    end
-                    if(mem_addr == (MEM_SIZE-1)) begin
+                    // if(mem_addr == (MEM_SIZE -2) ) begin        // if we reach the the
+                    //     tx.valid <='b0;
+                    // end
+                    if(mem_addr == (MEM_SIZE-1)|| mem_addr == mem_addr_temp ) begin
                         mem_addr <= 'b0;
                         rx.ready <= 'b1;
                         tx.valid <= 'b0;
+                        mem_addr_temp <= MEM_SIZE;
                         EA <= pre_receiving;
                     end else begin
                     
@@ -107,7 +114,7 @@ end
 always_comb begin
     sig_tx = tx.sig; // serial exit
     rx.sig = sig_rx; // serial in
-    states_led = colors;
+    states_led = colors[1:0];
 end
 
     //interfaces for the UART module
@@ -121,7 +128,7 @@ ram #(MEM_SIZE)mem( .clock      (clock),
                     .din        (rx.data),              // always connected to the receiver_out
                     .dout       (tx.data));             // always connected to the transmitter_in 
 
-uart #(8, 115200, 100_000_000 ) uart (
+uart #(8, 115200, 200_000_000 ) uart (
     .rxif       (rx),
     .txif       (tx),
     .clk        (clock),
